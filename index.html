@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Espanha de carro, de segunda a segunda</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--olive:#1F2620;--olive2:#2A332B;--bone:#F1EADB;--mist:#C8C2B4;--ochre:#D9A441;--chestnut:#9A5A36}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:#151a16;overflow:hidden}
+body{font-family:'Atkinson Hyperlegible',Verdana,sans-serif;color:var(--bone)}
+#stage{position:fixed;left:50%;top:50%;width:1920px;height:1080px;transform-origin:center;}
+.slide{position:absolute;inset:0;background:var(--olive);display:none;overflow:hidden}
+.slide.on{display:block}
+h1,h2,h3{font-family:'Bricolage Grotesque',Georgia,serif;font-weight:700;margin:0;line-height:1.02;letter-spacing:-.01em}
+.photo{position:absolute;background:var(--olive2) center/cover no-repeat}
+.photo .empty{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:40px;color:var(--mist);font-size:28px;line-height:1.35}
+.cap{position:absolute;left:0;right:0;bottom:0;padding:48px 40px 22px;background:linear-gradient(transparent,rgba(15,19,16,.85));font-size:26px;line-height:1.3}
+.cap small{display:block;font-size:18px;color:var(--mist);margin-top:4px}
+/* cover and close */
+.full .photo{inset:0}
+.full .photo .empty,.intro .photo .empty{justify-content:flex-end;align-items:flex-start;padding:90px 110px;text-align:right}
+.full .scrim{position:absolute;inset:0;background:linear-gradient(90deg,rgba(18,23,19,.88) 0%,rgba(18,23,19,.55) 45%,rgba(18,23,19,0) 75%)}
+.full .txt{position:absolute;left:120px;bottom:150px;width:980px}
+.full h1{font-size:150px}
+.full p.lead{font-size:40px;line-height:1.35;margin:36px 0 0;color:var(--bone)}
+.full .credit{position:absolute;right:40px;bottom:28px;font-size:18px;color:var(--mist);max-width:900px;text-align:right}
+/* overview */
+.ov{padding:110px 100px}
+.ov h2{font-size:84px}
+.ov .cols{display:flex;gap:28px;margin-top:56px}
+.ov .col{width:552px;background:var(--olive2);border-radius:6px;overflow:hidden}
+.ov .col .photo{position:relative;height:340px}
+.ov .col .in{padding:30px 30px 36px}
+.ov .tag{color:var(--ochre);font-size:26px;margin:0}
+.ov h3{font-size:58px;margin:10px 0 18px}
+.ov .line{font-size:28px;line-height:1.35;margin:0}
+.ov .drv{font-size:24px;color:var(--mist);margin:16px 0 0}
+/* route intro */
+.intro .photo{inset:0}
+.intro .scrim{position:absolute;inset:0;background:linear-gradient(90deg,rgba(18,23,19,.94) 0%,rgba(18,23,19,.86) 55%,rgba(18,23,19,.35) 100%)}
+.intro .l{position:absolute;left:110px;top:110px;width:900px}
+.intro .kicker{color:var(--ochre);font-size:30px;margin:0 0 18px}
+.intro h2{font-size:88px}
+.intro .body{font-size:30px;line-height:1.42;margin:34px 0 0;color:var(--bone)}
+.intro .oct{font-size:28px;line-height:1.38;margin:30px 0 0;padding-left:24px;border-left:6px solid var(--ochre)}
+.intro table{position:absolute;right:110px;top:150px;width:660px;border-collapse:collapse;font-size:30px}
+.intro td{padding:16px 0;border-bottom:1px solid rgba(241,234,219,.22)}
+.intro td.wd{width:110px;color:var(--ochre);font-weight:700}
+/* day */
+.day .big{left:0;top:0;width:1180px;height:1080px}
+.day .panel{position:absolute;left:1180px;top:0;width:740px;height:1080px;padding:72px 70px;display:flex;flex-direction:column}
+.day .when{color:var(--ochre);font-size:28px;margin:0}
+.day h2{font-size:64px;margin:14px 0 0}
+.day .drive{font-size:28px;color:var(--mist);margin:18px 0 0}
+.day ul{list-style:none;margin:30px 0 0;padding:0;font-size:32px;line-height:1.3}
+.day li{padding:12px 0 12px 34px;position:relative}
+.day li:before{content:"";position:absolute;left:0;top:26px;width:14px;height:14px;border-radius:50%;background:var(--ochre)}
+.day .opt{font-size:24px;color:var(--mist);margin:10px 0 0;line-height:1.35}
+.day .sleep{font-size:24px;color:var(--bone);margin:14px 0 0;line-height:1.35}
+.day .small{position:relative;margin-top:auto;height:290px;border-radius:4px;overflow:hidden}
+.day .small .cap{padding:36px 22px 14px;font-size:22px}
+.day .small .cap small{font-size:16px}
+.route{position:absolute;left:40px;top:32px;font-size:22px;color:var(--bone);background:rgba(15,19,16,.6);padding:8px 16px;border-radius:4px}
+/* chrome */
+#turn{position:fixed;left:0;right:0;top:0;padding:14px 18px;background:var(--ochre);color:#1F2620;font:700 18px 'Atkinson Hyperlegible',sans-serif;text-align:center;display:none;z-index:5}
+@media (orientation:portrait){#turn{display:block}}
+#bar{position:fixed;left:0;bottom:0;height:6px;background:var(--ochre);transition:width .3s}
+#nav{position:fixed;right:18px;bottom:18px;display:flex;gap:8px;align-items:center;font:16px 'Atkinson Hyperlegible',sans-serif;color:var(--mist);opacity:.75}
+#nav button{background:rgba(31,38,32,.85);color:var(--bone);border:1px solid rgba(241,234,219,.3);border-radius:4px;font-size:18px;padding:8px 14px;cursor:pointer}
+#nav button:focus-visible{outline:3px solid var(--ochre);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){#bar{transition:none}}
+</style>
+</head>
+<body>
+<div id="stage" aria-live="polite"></div>
+<div id="turn">Vire o celular na horizontal para ver os slides maiores.</div>
+<div id="bar"></div>
+<div id="nav"><button type="button" id="prev" aria-label="Slide anterior">‹</button><span id="count"></span><button type="button" id="next" aria-label="Próximo slide">›</button><button type="button" id="fs">Tela cheia</button></div>
+<script>
+const SLIDES=[{"k":"cover","ph":[["Monfragüe no inverno","Monfragüe invierno"]]},{"k":"overview","routes":[{"short":"Extremadura","tag":"O mais leve","line":"Monfragüe, Vale do Jerte e Vale do Ambroz","drive":"Nenhum dia passa de 3h de carro","ph":["Extremadura natural (principal)","Monfragüe invierno"]},{"short":"Andaluzia","tag":"Cidades e serras","line":"Córdoba, Alhambra, El Torcal e Grazalema","drive":"Dia mais longo: ~3h30","ph":["Andaluzia sem os já visitados","Alhambra Sierra Nevada nieve"]},{"short":"Norte selvagem","tag":"O mais selvagem, com risco de neve","line":"Sanabria, Las Médulas, Somiedo e Picos","drive":"Três dias com mais de 3h","ph":["Sanabria, Somiedo e Picos de Europa","Lagos de Covadonga nieve"]}]},{"k":"intro","short":"Extremadura","name":"Extremadura natural (principal)","intro":"Sai de Lisboa, dorme em Monsaraz e cruza para a Extremadura pelos parques do Tejo Internacional, de Monfragüe e do Vale do Jerte, com Trujillo e Guadalupe no caminho. Volta pelo Vale do Ambroz e por Marvão. Nenhum dia passa de 3h de carro.","oct":"Dezembro é inverno na Extremadura: dias curtos e frios, mas é quando os grous chegam para passar o inverno (conhecimento geral).","days":[["Seg","Lisboa até Monsaraz"],["Ter","Valencia de Alcántara e Alcántara"],["Qua","Monfragüe e Trujillo"],["Qui","Trujillo e Guadalupe"],["Sex","Guadalupe até o Vale do Jerte"],["Sáb","Vale do Jerte"],["Dom","Vale do Ambroz até Marvão"],["Seg","Marvão até Lisboa"]],"ph":[["Extremadura natural (principal)","Monfragüe invierno"]]},{"k":"day","route":"Extremadura","when":"Segunda, dia 1","t":"Lisboa até Monsaraz","drive":"~2h, direto","main":["Monsaraz"],"opt":[],"sleep":"Dormir: Vila Planície ou Estalagem de Monsaraz","baby":"Trecho direto, sem paradas. Saia logo depois da mamada.","ph":[["Monsaraz e o Alqueva num fim de tarde de inverno","Monsaraz inverno Alqueva"],["Muralhas de Monsaraz ao pôr do sol","castelo Monsaraz pôr do sol"]]},{"k":"day","route":"Extremadura","when":"Terça, dia 2","t":"Valencia de Alcántara e Alcántara","drive":"~2h35, em dois trechos","main":["Valencia de Alcántara","Alcántara e o Tejo Internacional"],"opt":[],"sleep":"Dormir: Hospedería Conventual de Alcántara ou Convento de San Bartolomé","baby":"O primeiro trecho passa por Portugal, pela estrada de Marvão. Alcántara tem pouca oferta de hotéis: reserve com antecedência. Leve os documentos de todos, incluindo os do bebê.","ph":[["Um dólmen no campo de Valencia de Alcántara","dolmen Valencia de Alcántara"],["Ponte romana de Alcántara sobre o Tejo","puente romano Alcántara"]]},{"k":"day","route":"Extremadura","when":"Quarta, dia 3","t":"Monfragüe e Trujillo","drive":"~2h15, em dois trechos","main":["Salto del Gitano","Castelo de Monfragüe","Trujillo, chegada"],"opt":["Confluência do Tiétar com o Tejo"],"sleep":"Dormir: Izan Trujillo ou El Baciyelmo","baby":"O castelo pede uns 2 km a pé: só com canguru. Em dezembro anoitece cedo: chegue a Trujillo ainda com luz.","ph":[["Salto del Gitano, com grifos","Salto del Gitano Monfragüe"],["Grous no inverno da Extremadura","grullas Extremadura invierno"]]},{"k":"day","route":"Extremadura","when":"Quinta, dia 4","t":"Trujillo e Guadalupe","drive":"~1h","main":["Castelo e Santa María la Mayor","Mosteiro Real de Guadalupe"],"opt":["Geoparque Villuercas Ibores Jara"],"sleep":"Dormir: Parador de Guadalupe","baby":"A visita ao mosteiro é só com guia: confirme o horário e veja se cabe entre as sonecas.","ph":[["Castelo de Trujillo e Santa María la Mayor","castillo de Trujillo"],["Guadalupe e as serras das Villuercas no inverno","Guadalupe Villuercas invierno"]]},{"k":"day","route":"Extremadura","when":"Sexta, dia 5","t":"Guadalupe até o Vale do Jerte","drive":"~2h (estimativa)","main":["Cascada del Caozo","Fim de tarde no vale"],"opt":[],"sleep":"Dormir: Glamping El Regajo Valle del Jerte ou Exe Alfonso VIII (Plasencia)","baby":"Trecho longo pela serra: pare para mamada no meio.","ph":[["Cascada del Caozo com água no inverno","Cascada del Caozo invierno"],["Vale do Jerte no inverno","Valle del Jerte invierno"]]},{"k":"day","route":"Extremadura","when":"Sábado, dia 6","t":"Vale do Jerte","drive":"~1h, perto da base","main":["Garganta de los Infiernos"],"opt":["Cascatas da Garganta Nogaledas","Meandro del Melero (troca)"],"sleep":"Mesma base no Vale do Jerte.","baby":"Los Pilones e Nogaledas pedem vários quilómetros: deixe para quem caminha bem, ou só com canguru. Os trilhos podem estar com lama: calçado firme.","ph":[["Los Pilones no inverno","Los Pilones Garganta de los Infiernos invierno"],["Chorrero de la Virgen no inverno","Chorrero de la Virgen invierno"]]},{"k":"day","route":"Extremadura","when":"Domingo, dia 7","t":"Vale do Ambroz até Marvão","drive":"~2h55, em dois trechos (estimativa)","main":["Vale do Ambroz","Marvão"],"opt":[],"sleep":"Dormir: Train Spot Guesthouse ou Pousada de Marvão","baby":"Pausa para mamada entre os dois trechos. Chegue a Marvão ainda com luz.","ph":[["Hervás e o Vale do Ambroz no inverno","Hervás invierno"],["Marvão num dia de inverno","Marvão inverno"]]},{"k":"day","route":"Extremadura","when":"Segunda, dia 8 (volta)","t":"Marvão até Lisboa","drive":"~2h30 (estimativa)","main":["Volta para casa"],"opt":[],"sleep":"","baby":"Saia depois da mamada da manhã.","ph":[["Marvão acima do nevoeiro de inverno","Marvão nevoeiro"],["Serra de São Mamede no inverno","Serra de São Mamede inverno"]]},{"k":"intro","short":"Andaluzia","name":"Andaluzia sem os já visitados","intro":"Baseado no road trip de 2 semanas do Andalucia Lovers, encurtado para 8 dias e sem Sevilha, Málaga, Cádiz, Jerez, Marbella, Aracena e Gibraltar. Sai de Lisboa, dorme em Monsaraz e cruza a fronteira por Mourão. Natureza no Torcal de Antequera, na Serra de Grazalema e, se quiserem, em Doñana. O dia mais longo é o de Monsaraz a Córdoba, com ~3h30 de estrada.","oct":"Em dezembro, o sul é a região mais amena dos três roteiros (conhecimento geral).","days":[["Seg","Lisboa até Monsaraz"],["Ter","Monsaraz até Córdoba"],["Qua","Córdoba até Granada"],["Qui","Granada e a Alhambra"],["Sex","El Torcal, Antequera e Ronda"],["Sáb","Aldeias brancas e Serra de Grazalema"],["Dom","Ronda até Huelva"],["Seg","Huelva até Lisboa"]],"ph":[["Andaluzia sem os já visitados","Alhambra Sierra Nevada nieve"]]},{"k":"day","route":"Andaluzia","when":"Segunda, dia 1","t":"Lisboa até Monsaraz","drive":"~2h, direto","main":["Monsaraz"],"opt":[],"sleep":"Dormir: Vila Planície ou Estalagem de Monsaraz","baby":"Trecho direto, sem paradas. Saia logo depois da mamada.","ph":[["Monsaraz e o Alqueva num fim de tarde de inverno","Monsaraz inverno Alqueva"],["Muralhas de Monsaraz ao pôr do sol","castelo Monsaraz pôr do sol"]]},{"k":"day","route":"Andaluzia","when":"Terça, dia 2","t":"Monsaraz até Córdoba","drive":"~3h30, em dois trechos (estimativa)","main":["Villanueva del Fresno","Alcázar de los Reyes Cristianos","Ponte Romana ao entardecer"],"opt":["Palácio de Viana"],"sleep":"Dormir: Hotel Córdoba Center ou Eurostars Patios de Córdoba","baby":"É o trecho mais longo do roteiro: pare para mamada no meio. Deixe o carro num estacionamento público perto do centro, porque grande parte da Judería é fechada ao trânsito.","ph":[["Jardins do Alcázar de los Reyes Cristianos","Alcázar Reyes Cristianos jardines Córdoba"],["Ponte Romana de Córdoba com luzes de Natal","Córdoba Navidad luces"]]},{"k":"day","route":"Andaluzia","when":"Quarta, dia 3","t":"Córdoba até Granada","drive":"~2h (estimativa)","main":["Mesquita-Catedral","Albaicín e Mirador de San Nicolás"],"opt":["Judiaria","Sacromonte"],"sleep":"Dormir: Granada Old Town Hostel ou Palacio Cabrera","baby":"Há zonas do centro de Granada só para moradores, vigiadas por câmaras: estacione num parque público antes do hotel. O Albaicín tem ladeiras: canguru.","ph":[["Arcos vermelhos e brancos da Mesquita-Catedral","Mezquita Córdoba arcos"],["Alhambra com a Sierra Nevada nevada ao fundo","Alhambra Sierra Nevada nieve"]]},{"k":"day","route":"Andaluzia","when":"Quinta, dia 4","t":"Granada e a Alhambra","drive":"Sem carro (Alpujarras: opcional)","main":["Alhambra","Capela Real","Tapas na Rua Navas"],"opt":["Alpujarras"],"sleep":"Mesma base em Granada.","baby":"Os bilhetes são nominativos e esgotam semanas antes na época alta: compre assim que tiver a data. Marque os Palácios logo depois de uma soneca.","ph":[["Palácios Nasridas da Alhambra","Palacios Nazaríes Alhambra"],["Jardins do Generalife no inverno","Generalife invierno"]]},{"k":"day","route":"Andaluzia","when":"Sexta, dia 5","t":"El Torcal, Antequera e Ronda","drive":"~2h15, em dois trechos (estimativa)","main":["Parque Natural de El Torcal","Dólmenes de Menga e Viera","Alameda del Tajo"],"opt":[],"sleep":"Dormir: Catalonia Ronda ou Soho Boutique Palacio San Gabriel","baby":"Escolha um trilho curto no Torcal e leve canguru.","ph":[["El Torcal com nevoeiro de inverno","Torcal de Antequera niebla invierno"],["Interior do Dólmen de Menga","Dolmen de Menga"]]},{"k":"day","route":"Andaluzia","when":"Sábado, dia 6","t":"Aldeias brancas e Serra de Grazalema","drive":"~2h30 em circuito (Andalucia Lovers)","main":["Setenil de las Bodegas","Zahara de la Sierra","Puerto de las Palomas e Grazalema","Montejaque"],"opt":["Acinipo"],"sleep":"Mesma base em Ronda.","baby":"Nas aldeias, estacione na entrada ou na parte baixa e siga a pé com o canguru.","ph":[["Setenil de las Bodegas, casas sob a rocha","Setenil de las Bodegas"],["Floresta de pinsapos de Grazalema no inverno","pinsapar Grazalema invierno"]]},{"k":"day","route":"Andaluzia","when":"Domingo, dia 7","t":"Ronda até Huelva","drive":"~2h45 (estimativa)","main":["Puente Nuevo e miradouros","Banhos árabes","Huelva, chegada"],"opt":["Casa del Rey Moro"],"sleep":"Dormir: Senator Huelva ou AC Hotel Huelva","baby":"Pare para mamada no meio do trecho.","ph":[["Puente Nuevo de Ronda no inverno","Puente Nuevo Ronda invierno"],["Banhos árabes de Ronda","Baños árabes Ronda"]]},{"k":"day","route":"Andaluzia","when":"Segunda, dia 8 (volta)","t":"Huelva até Lisboa","drive":"~3h45 (estimativa)","main":["Volta para casa"],"opt":["El Rocío e Doñana","Mosteiro de La Rábida"],"sleep":"","baby":"Pare no Algarve para mamada.","ph":[["Aves de inverno nas marismas de Doñana","Doñana invierno aves marismas"],["Mosteiro de La Rábida","Monasterio de La Rábida"]]},{"k":"intro","short":"Norte selvagem","name":"Sanabria, Somiedo e Picos de Europa","intro":"O mais selvagem, o com mais estrada e, em dezembro, o com mais risco de neve: o Lago de Sanabria, Las Médulas, os ursos de Somiedo e os Picos de Europa. Sai direto de Lisboa e tem três dias com mais de 3h de carro.","oct":"Em dezembro pode haver neve e estradas fechadas em Somiedo e nos Picos de Europa (conhecimento geral).","days":[["Seg","Lisboa até Puebla de Sanabria"],["Ter","Lago de Sanabria"],["Qua","Ponferrada e Las Médulas"],["Qui","Ponferrada até Somiedo"],["Sex","Somiedo"],["Sáb","Somiedo até os Picos de Europa"],["Dom","Covadonga até Zamora"],["Seg","Zamora até Lisboa"]],"ph":[["Sanabria, Somiedo e Picos de Europa","Lagos de Covadonga nieve"]]},{"k":"day","route":"Norte selvagem","when":"Segunda, dia 1","t":"Lisboa até Puebla de Sanabria","drive":"~5h, em três trechos (estimativa)","main":["Puebla de Sanabria"],"opt":[],"sleep":"Dormir: Hotel Victoria ou Hotel Las Treixas","baby":"Dia longo de estrada: pare a cada 2h.","ph":[["Puebla de Sanabria com o castelo","Puebla de Sanabria castillo"],["Plaza Mayor de Puebla de Sanabria","Puebla de Sanabria plaza mayor"]]},{"k":"day","route":"Norte selvagem","when":"Terça, dia 2","t":"Lago de Sanabria","drive":"~1h no total","main":["Lago de Sanabria","Mosteiro de San Martín de Castañeda"],"opt":["Sierra de la Culebra"],"sleep":"Mesma base em Puebla de Sanabria.","baby":"Os passeios de barco podem não funcionar fora da época alta: confirme antes.","ph":[["Lago de Sanabria no inverno","Lago de Sanabria invierno"],["Mosteiro de San Martín de Castañeda","San Martín de Castañeda"]]},{"k":"day","route":"Norte selvagem","when":"Quarta, dia 3","t":"Ponferrada e Las Médulas","drive":"~2h, em dois trechos (estimativa)","main":["Las Médulas","Castelo dos Templários"],"opt":[],"sleep":"Dormir: AC Hotel Ponferrada ou Hotel Los Templarios","baby":"Os miradouros de Las Médulas pedem caminhada: canguru.","ph":[["Las Médulas no inverno","Las Médulas invierno"],["Castelo dos Templários de Ponferrada","Castillo Templarios Ponferrada"]]},{"k":"day","route":"Norte selvagem","when":"Quinta, dia 4","t":"Ponferrada até Somiedo","drive":"~2h (estimativa)","main":["Brañas de Somiedo"],"opt":[],"sleep":"Dormir: Casa Felisa ou Pensión Casa Cesáreo","baby":"Estradas de montanha com curvas: vá com calma.","ph":[["Brañas de Somiedo com neve","brañas Somiedo nieve"],["Montanhas de Somiedo no inverno","Somiedo invierno paisaje"]]},{"k":"day","route":"Norte selvagem","when":"Sexta, dia 5","t":"Somiedo","drive":"~1h no total","main":["Lagos de Saliencia"],"opt":["Cascada del Xiblu","Senda del Oso"],"sleep":"Mesma base em Somiedo.","baby":"O trilho dos lagos é de montanha: só com canguru e com tempo bom.","ph":[["Lagos de Saliencia no inverno","Lagos de Saliencia invierno"],["Senda del Oso no inverno","Senda del Oso invierno"]]},{"k":"day","route":"Norte selvagem","when":"Sábado, dia 6","t":"Somiedo até os Picos de Europa","drive":"~2h15 (estimativa)","main":["Cangas de Onís"],"opt":["Ruta del Cares"],"sleep":"Dormir: Parador de Cangas de Onís ou Hotel Santa Cruz","baby":"Chegue ainda com luz: em dezembro anoitece cedo.","ph":[["Ponte de Cangas de Onís","puente romano Cangas de Onís"],["Ruta del Cares no inverno","Ruta del Cares invierno"]]},{"k":"day","route":"Norte selvagem","when":"Domingo, dia 7","t":"Covadonga até Zamora","drive":"~3h (estimativa)","main":["Santuário e Lagos de Covadonga","Zamora, chegada"],"opt":[],"sleep":"Dormir: Ares Hotel ou Parador de Zamora","baby":"Dia pesado: faça Covadonga cedo e pare para mamada no meio do caminho.","ph":[["Lagos de Covadonga com neve","Lagos de Covadonga nieve"],["Catedral de Zamora sobre o Douro","Zamora catedral Duero"]]},{"k":"day","route":"Norte selvagem","when":"Segunda, dia 8 (volta)","t":"Zamora até Lisboa","drive":"~5h, em três trechos (estimativa)","main":["Volta para casa"],"opt":[],"sleep":"","baby":"Pare a cada 2h.","ph":[["Ponte de Pedra de Zamora","Puente de Piedra Zamora"],["Uma igreja românica de Zamora","Zamora románico iglesia"]]},{"k":"close","ph":[["Inverno na Serra de Grazalema","Grazalema invierno"]]}];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const stage=document.getElementById('stage');
+let frameId=0;const JOBS=[];
+function photo(cls,ph,style){const id='ph'+(frameId++);JOBS.push({id,cap:ph[0],q:ph[1]});return '<div class="photo '+cls+'" id="'+id+'" style="'+(style||'')+'"><div class="empty">'+esc(ph[0])+'<br>carregando a foto…</div></div>'}
+function render(s){
+  if(s.k==='cover')return '<section class="slide full">'+photo('',s.ph[0])+'<div class="scrim"></div><div class="txt"><h1>Espanha de carro</h1><p class="lead">Três roteiros de 8 dias, de segunda a segunda, com natureza e pensados para dezembro. Só lugares que ainda não conhecemos.</p></div></section>';
+  if(s.k==='close')return '<section class="slide full">'+photo('',s.ph[0])+'<div class="scrim"></div><div class="txt"><h1>Qual vamos fazer?</h1><p class="lead">Extremadura, Andaluzia ou Norte selvagem.</p></div></section>';
+  if(s.k==='overview')return '<section class="slide ov"><h2>Três roteiros de 8 dias</h2><div class="cols">'+s.routes.map(r=>'<div class="col">'+photo('',r.ph)+'<div class="in"><p class="tag">'+esc(r.tag)+'</p><h3>'+esc(r.short)+'</h3><p class="line">'+esc(r.line)+'</p><p class="drv">'+esc(r.drive)+'</p></div></div>').join('')+'</div></section>';
+  if(s.k==='intro')return '<section class="slide intro">'+photo('',s.ph[0])+'<div class="scrim"></div><div class="l"><p class="kicker">Roteiro '+esc(s.short)+'</p><h2>'+esc(s.name)+'</h2><p class="body">'+esc(s.intro)+'</p><p class="oct">Em dezembro: '+esc(s.oct.replace(/^Em dezembro,?\s*/i,''))+'</p></div><table>'+s.days.map(d=>'<tr><td class="wd">'+esc(d[0])+'</td><td>'+esc(d[1])+'</td></tr>').join('')+'</table></section>';
+  return '<section class="slide day">'+photo('big',s.ph[0])+'<p class="route">'+esc(s.route)+'</p><div class="panel"><p class="when">'+esc(s.when)+'</p><h2>'+esc(s.t)+'</h2><p class="drive">'+esc(s.drive)+'</p><ul>'+s.main.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>'+(s.opt.length?'<p class="opt">Se sobrar tempo: '+esc(s.opt.join(', '))+'</p>':'')+(s.sleep?'<p class="sleep">'+esc(s.sleep)+'</p>':'')+'<div class="small">'+photo('',s.ph[1],'inset:0')+'</div></div></section>';
+}
+stage.innerHTML=SLIDES.map(render).join('');
+const els=[...stage.querySelectorAll('.slide')];
+let cur=0;
+function fit(){const s=Math.min(innerWidth/1920,innerHeight/1080);stage.style.transform='translate(-50%,-50%) scale('+s+')'}
+function show(i){cur=Math.max(0,Math.min(els.length-1,i));els.forEach((e,j)=>e.classList.toggle('on',j===cur));document.getElementById('count').textContent=(cur+1)+' / '+els.length;document.getElementById('bar').style.width=((cur+1)/els.length*100)+'%';try{history.replaceState(null,'','#'+(cur+1))}catch(e){}}
+addEventListener('resize',fit);fit();
+const h=parseInt(location.hash.slice(1),10);show(isNaN(h)?0:h-1);
+addEventListener('keydown',e=>{if(['ArrowRight','PageDown',' ','Enter'].includes(e.key)){e.preventDefault();show(cur+1)}else if(['ArrowLeft','PageUp','Backspace'].includes(e.key)){e.preventDefault();show(cur-1)}else if(e.key==='Home')show(0);else if(e.key==='End')show(els.length-1);else if(e.key==='f'||e.key==='F')toggleFs()});
+document.getElementById('prev').onclick=()=>show(cur-1);
+document.getElementById('next').onclick=()=>show(cur+1);
+function toggleFs(){if(!document.fullscreenElement)document.documentElement.requestFullscreen().catch(()=>{});else document.exitFullscreen()}
+document.getElementById('fs').onclick=toggleFs;
+let tx=null;addEventListener('touchstart',e=>{tx=e.touches[0].clientX},{passive:true});
+addEventListener('touchend',e=>{if(tx==null)return;const dx=e.changedTouches[0].clientX-tx;if(Math.abs(dx)>50)show(cur+(dx<0?1:-1));tx=null});
+
+/* fotos do Wikimedia Commons, buscadas no navegador */
+const USED=new Set();
+const BAD=/map|mapa|logo|escudo|coat|flag|bandera|plano|diagram|\.svg|\.tif|\.pdf|sello|stamp|postal/i;
+const SEASON=/invierno|inverno|winter|diciembre|dezembro|december|nieve|neve|snow|nevada|navidad|natal|christmas|grulla/i;
+const strip=h=>{const d=document.createElement('div');d.innerHTML=h||'';return (d.textContent||'').trim().replace(/\s+/g,' ')};
+async function search(t){
+  const u='https://commons.wikimedia.org/w/api.php?action=query&format=json&origin=*&generator=search&gsrnamespace=6&gsrlimit=15&gsrsearch='+encodeURIComponent(t+' filetype:bitmap')+'&prop=imageinfo&iiprop=url|size|extmetadata&iiurlwidth=1280';
+  const r=await fetch(u);const j=await r.json();
+  return Object.values((j.query&&j.query.pages)||{}).sort((a,b)=>a.index-b.index).filter(p=>p.imageinfo&&!BAD.test(p.title)&&p.imageinfo[0].width>=1000&&p.imageinfo[0].width>=p.imageinfo[0].height);
+}
+async function openverse(t){
+  const u='https://api.openverse.org/v1/images/?q='+encodeURIComponent(t)+'&page_size=15';
+  const r=await fetch(u);if(!r.ok)return [];const j=await r.json();
+  return (j.results||[]).filter(x=>x.url&&(x.width||0)>=900&&(x.width||0)>=(x.height||0)&&!BAD.test(x.title||'')).map(x=>({title:'ov:'+(x.id||x.url),name:x.title||'',src:x.url,alt:x.thumbnail||'',who:x.creator||'autor no Openverse',lic:x.license?('CC '+String(x.license).toUpperCase()+(x.license_version?' '+x.license_version:'')):'',from:(x.source||x.provider||'Openverse')}));
+}
+function fromCommons(p){const ii=p.imageinfo[0],m=ii.extmetadata||{};return {title:p.title,name:p.title,src:ii.thumburl||ii.url,alt:ii.url,who:strip(m.Artist&&m.Artist.value)||'autor no Wikimedia Commons',lic:strip(m.LicenseShortName&&m.LicenseShortName.value),from:'Wikimedia Commons'}}
+async function candidates(q){
+  const seasonal=SEASON.test(q);
+  const plain=q.replace(/\b(invierno|inverno|nieve|navidad|oto[ñn]o|outono)\b/gi,'').replace(/\s+/g,' ').trim();
+  const short=plain.split(' ').slice(0,2).join(' ');
+  const queries=[...new Set([q,plain,short])];
+  let out=[],net=false;
+  for(const t of queries){
+    try{(await search(t)).map(fromCommons).forEach(x=>out.push(x));net=true}catch(e){}
+    if(seasonal&&t===q){try{(await openverse(t)).forEach(x=>out.push(x));net=true}catch(e){}}
+    if(out.filter(x=>!USED.has(x.title)).length>=6)break;
+  }
+  if(out.filter(x=>!USED.has(x.title)).length<3){try{(await openverse(plain)).forEach(x=>out.push(x));net=true}catch(e){}}
+  if(!net)throw new Error('offline');
+  const seen=new Set();out=out.filter(x=>{if(seen.has(x.title)||USED.has(x.title))return false;seen.add(x.title);return true});
+  if(seasonal)out.sort((a,b)=>(SEASON.test(b.name)?1:0)-(SEASON.test(a.name)?1:0));
+  return out;
+}
+function load(src){return new Promise(res=>{if(!src)return res(false);const i=new Image();const t=setTimeout(()=>{i.src='';res(false)},15000);i.onload=()=>{clearTimeout(t);res(true)};i.onerror=()=>{clearTimeout(t);res(false)};i.src=src})}
+async function fill(job){
+  const el=document.getElementById(job.id);if(!el)return;
+  const msg=t=>{const e=el.querySelector('.empty');if(e)e.innerHTML=esc(job.cap)+'<br>'+t};
+  let list;
+  try{list=await candidates(job.q)}catch(e){msg('Sem internet: abra esta apresentação com internet para ver as fotos.');return}
+  for(const p of list.slice(0,8)){
+    if(USED.has(p.title))continue;
+    USED.add(p.title);
+    let src=p.src;
+    if(!(await load(src))){src=p.alt;if(!(await load(src)))continue}
+    el.style.backgroundImage='url("'+src+'")';
+    el.innerHTML='<div class="cap">'+esc(job.cap)+'<small>Foto: '+esc(p.who)+(p.lic?', '+esc(p.lic):'')+', '+esc(p.from)+'</small></div>';
+    return;
+  }
+  msg('Nenhuma foto encontrada para esta vista.');
+}
+(async()=>{
+  const queue=JOBS.slice();
+  const worker=async()=>{while(queue.length){await fill(queue.shift())}};
+  await Promise.all([worker(),worker(),worker()]);
+})();
+</script>
+</body>
+</html>
